@@ -6,7 +6,10 @@ import com.annag.pokemon_app.service.PokemonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.awt.print.Pageable;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 @RestController
 @RequestMapping
@@ -19,24 +22,26 @@ public class PokemonController {
         this.pokemonService = pokemonService;
     }
 
-    @GetMapping("/pokemons")
-    private List < Pokemon > getAllPokemons() {
+    @GetMapping("/pokemons/all")
+    public List < Pokemon > getAllPokemons() {
         return pokemonService.getAllPokemons();
     }
 
     @GetMapping("/pokemons/{id}")
-    private Pokemon getPokemon (@PathVariable("id") int id) throws NotFoundException {
+    public Pokemon getPokemon (@PathVariable("id") int id) throws NotFoundException {
         return pokemonService.getPokemonById(id);
     }
 
-//    @GetMapping("/pokemons/{filter}")
-//    private List<Pokemon> getPokemonsByFilter (@PathVariable("filter") String filter) {
-//        return pokemonService.getPokemonsByFilter(filter);
-//    }
+    @GetMapping("/pokemons/english")
+    public List<Pokemon> getPokemonsByName (@RequestParam("name") String name) {
+        return pokemonService.getPokemonsByName(name);
+    }
 
     @GetMapping("/pokemons/types")
-    private Pokemon getAllPokemonTypes () {
-        return pokemonService.getAllPokemonTypes();
+    public Set<String> getAllPokemonTypes () {
+        Set<String> result = pokemonService.getAllPokemonTypes();
+        System.out.println(result);
+        return result;
     }
 
     @PostMapping("/pokemons")
@@ -44,73 +49,19 @@ public class PokemonController {
         return pokemonService.saveOrUpdate(pokemon);
     }
 
-//    @GetMapping("/pokemons/{id}")
-//    public ResponseEntity< Pokemon > getEmployeeById(@PathVariable(value = "id") Integer pokemonId)
-//            throws NotFoundException {
-//        Pokemon employee = pokemonRepository.findById(pokemonId)
-//                .orElseThrow(() -> new NotFoundException("Employee not found for this id :: " + pokemonId));
-//        return ResponseEntity.ok().body(employee);
-//    }
-
-//    @PostMapping("/pokemons")
-//    public Pokemon createPokemon( @RequestBody Pokemon pokemon) {
-//        return pokemonRepository.save(pokemon);
-//    }
-
-//    @PutMapping("/pokemons/{id}")
-//    public ResponseEntity < Pokemon > updatePokemon(@PathVariable(value = "id") Integer pokemonId,
-//                                                    @RequestBody Pokemon pokemonDetails) throws NotFoundException {
-//        Pokemon pokemon = pokemonRepository.findById(pokemonId)
-//                .orElseThrow(() -> new NotFoundException("Pokemon not found for this id :: " + pokemonId));
-////TODO - finish all details
-//        pokemon.setBase_attack(pokemonDetails.getBase_attack());
-//        pokemon.setBase_defence(pokemonDetails.getBase_defence());
-//        pokemon.setName_english(pokemonDetails.getName_english());
-//        final Pokemon updatePokemon = pokemonRepository.save(pokemon);
-//        return ResponseEntity.ok(updatePokemon);
-//    }
-
-//    @DeleteMapping("/pokemons/{id}")
-//    public Map< String, Boolean > deletePokemon(@PathVariable(value = "id") Integer pokemonId)
-//            throws NotFoundException {
-//        Pokemon pokemon = pokemonRepository.findById(pokemonId)
-//                .orElseThrow(() -> new NotFoundException("Pokemon not found for this id :: " + pokemonId));
-//
-//        pokemonRepository.delete(pokemon);
-//        Map < String, Boolean > response = new HashMap< >();
-//        response.put("deleted", Boolean.TRUE);
-//        return response;
+//    @GetMapping("/pokemons/filter/{filters}")
+//    public Optional<List<Pokemon>> getListOfPFilteredPokemons(
+//            @And({@Spec(path = "hp", params = "base_HP", spec = GreaterThanOrEqual.class),
+//                    @Spec(path = "attack", params = "base_Attack", spec = LessThanOrEqual.class),
+//                    @Spec(path = "base_defence", params = "base_Defense", spec = GreaterThanOrEqual.class),
+//                    @Spec(path = "sp_attack", params = "base_Sp_attack", spec = LessThanOrEqual.class),
+//                    @Spec(path = "speed", params = "base_Speed", spec = GreaterThanOrEqual.class),
+//                    @Spec(path = "defemce", params = "defense[lte]", spec = LessThanOrEqual.class),
+//                    @Spec(path = "name_english", params = "name_english"),
+//                    @Spec(path = "name_japanease", params = "name_japanease"),
+//                    @Spec(path = "name_chinease", params = "name_chinease"),
+//                    @Spec(path = "name_french", params = "name_french", specs = Equal.class)}) Specification<Pokemon> specs, Pageable page Pageable page)
+//    {
+//        return pokemonService.getListOfPFilteredPokemons(specs, page);
 //    }
 }
-
-//public class PokemonController {
-//
-//
-//    @Autowired
-//    PokemonService pokemonService;
-//    //creating a get mapping that retrieves all the pokemon detail from the database
-//    @GetMapping("/pokemon")
-//    private List<Pokemon> getAllPokemons()
-//    {
-//        return pokemonService.getAllPokemons();
-//    }
-//
-//    @GetMapping("/pokemon/{id}")
-//    private Pokemon getPokemon(@PathVariable("id") int id)
-//    {
-//        return pokemonService.getPokemonById(id);
-//    }
-//    @DeleteMapping("/pokemon/{id}")
-//    private void deletePokemon(@PathVariable("id") int id)
-//    {
-//        pokemonService.deletePokemon(id);
-//    }
-//
-//    @PostMapping("/pokemon")
-//    private int savePokemon(@RequestBody Pokemon pokemon)
-//    {
-//        System.out.println("/okemon");
-//        pokemonService.saveOrUpdate(pokemon);
-//        return pokemon.getId();
-//    }
-//}

@@ -7,7 +7,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(appliesTo = "pokemon")
-public class Pokemon
+public class Pokemon implements Serializable
 {
     @Id
     @Column(name = "id", nullable = false)
@@ -27,7 +27,9 @@ public class Pokemon
     private String name_french;
 
     @Column
-    private String type;
+    @ElementCollection
+    @CollectionTable (name="type", joinColumns = @JoinColumn(name ="id"))
+    private Set<String> type;
 
     @Column
     private int base_hp;
@@ -87,11 +89,11 @@ public class Pokemon
         this.name_french = name_french;
     }
 
-    public String getType() {
+    public Set<String> getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(Set<String> type) {
         this.type = type;
     }
 
